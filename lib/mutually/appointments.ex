@@ -4,6 +4,9 @@ defmodule Mutually.Appointments do
   """
 
   import Ecto.Query, warn: false
+  alias Mutually.Activities.Activity
+  alias Mutually.MutualActivities
+  alias Mutually.Activities
   alias Mutually.Mutuals.Mutual
   alias Mutually.Repo
 
@@ -47,20 +50,32 @@ defmodule Mutually.Appointments do
 
   def get_appointment(id), do: Repo.get(Appointment, id)
 
-  @doc """
-  Creates a appointment.
+  defp post_create({:ok, %Appointment{} = appointment}) do
+    appointment |> register_appointment_activity()
+    {:ok, appointment}
+  end
 
-  ## Examples
+  defp post_create(_) do
+  end
 
-      iex> create_appointment(%{field: value})
-      {:ok, %Appointment{}}
-
-      iex> create_appointment(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
   def create_appointment(%Mutual{} = mutual, attrs \\ %{}) do
-    mutual |> Appointment.appointment_changeset(attrs) |> Repo.insert()
+    mutual
+    |> Appointment.appointment_changeset(attrs)
+    |> Repo.insert()
+    |> post_create()
+  end
+
+  defp register_appointment_activity(%Appointment{} = appointment) do
+    appointment = Repo.preload(appointment, :mutual)
+
+    case Activities.get_activity("A") do
+      %Activity{} = activity ->
+        MutualActivities.create_mutual_activity(appointment.mutual, activity)
+
+      nil ->
+        {:ok,activity} = Activities.create_activity(%{tag: "A", name: "Appointment"})
+        MutualActivities.create_mutual_activity(appointment.mutual, activity)
+    end
   end
 
   @doc """

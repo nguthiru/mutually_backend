@@ -36,7 +36,7 @@ defmodule Mutually.Mutuals do
       ** (Ecto.NoResultsError)
 
   """
-  def get_mutual(id), do: Repo.get(Mutual, id)
+  def get_mutual(id), do: Repo.get(Mutual, id) |> Repo.preload(:mutual_points)
 
   @doc """
   Creates a mutual.
@@ -147,4 +147,6 @@ defmodule Mutually.Mutuals do
       false -> {:error, :not_allowed}
     end
   end
+
+
 end

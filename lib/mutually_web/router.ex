@@ -43,7 +43,7 @@ defmodule MutuallyWeb.Router do
       get "/:id", MutualController, :show
       delete "/:id", MutualController, :remove_mutual
       put "/:id", MutualController, :update_mutual
-
+      get "/:id/activities", MutualController, :mutual_activities
       scope "/:id/appointments" do
         get "/", AppointmentController, :mutual_appointments
         get "/:appointment_id", AppointmentController, :show_mutual_appointments

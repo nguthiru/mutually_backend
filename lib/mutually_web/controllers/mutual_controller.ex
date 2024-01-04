@@ -1,10 +1,11 @@
 defmodule MutuallyWeb.MutualController do
+  alias Mutually.MutualActivities
   alias MutuallyWeb.Plugs.CheckMutual
   alias MutuallyWeb.FallbackController
   alias Mutually.Mutuals
   use MutuallyWeb, :controller
   action_fallback MutuallyWeb.FallbackController
-  plug CheckMutual when action in [:show, :remove_mutual, :update_mutual]
+  plug CheckMutual when action in [:show, :remove_mutual, :update_mutual,:mutual_activities]
 
   def index(conn, _params) do
     mutuals = Mutuals.get_profile_mutuals(conn.assigns.user.profile)
@@ -35,5 +36,13 @@ defmodule MutuallyWeb.MutualController do
         |> put_status(:bad_request)
         |> json(FallbackController.translate_errors_to_json(changeset))
     end
+  end
+
+  def mutual_activities(conn,_params) do
+    activities = MutualActivities.get_mutual_activities(conn.assigns.mutual)
+
+    conn
+    |> json(%{"activities" => activities})
+
   end
 end
