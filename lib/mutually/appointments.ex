@@ -4,6 +4,7 @@ defmodule Mutually.Appointments do
   """
 
   import Ecto.Query, warn: false
+  alias Mutually.Mutuals.Mutual
   alias Mutually.Repo
 
   alias Mutually.Appointments.Appointment
@@ -35,7 +36,16 @@ defmodule Mutually.Appointments do
       ** (Ecto.NoResultsError)
 
   """
-  def get_appointment!(id), do: Repo.get!(Appointment, id)
+  def get_appointment(%Mutual{} = mutual, id) do
+    query =
+      from a in Appointment,
+        where: a.id == ^id and a.mutual_id == ^mutual.id,
+        select: a
+
+    Repo.one!(query) |> Repo.preload(:mutual)
+  end
+
+  def get_appointment(id), do: Repo.get(Appointment, id)
 
   @doc """
   Creates a appointment.
@@ -49,10 +59,8 @@ defmodule Mutually.Appointments do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_appointment(attrs \\ %{}) do
-    %Appointment{}
-    |> Appointment.changeset(attrs)
-    |> Repo.insert()
+  def create_appointment(%Mutual{} = mutual, attrs \\ %{}) do
+    mutual |> Appointment.appointment_changeset(attrs) |> Repo.insert()
   end
 
   @doc """
@@ -100,5 +108,14 @@ defmodule Mutually.Appointments do
   """
   def change_appointment(%Appointment{} = appointment, attrs \\ %{}) do
     Appointment.changeset(appointment, attrs)
+  end
+
+  def get_mutual_appointments(%Mutual{} = mutual) do
+    query =
+      from a in Appointment,
+        where: a.mutual_id == ^mutual.id,
+        select: a
+
+    Repo.all(query) |> Repo.preload(:mutual)
   end
 end

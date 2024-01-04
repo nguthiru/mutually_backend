@@ -43,12 +43,20 @@ defmodule MutuallyWeb.Router do
       get "/:id", MutualController, :show
       delete "/:id", MutualController, :remove_mutual
       put "/:id", MutualController, :update_mutual
+
+      scope "/:id/appointments" do
+        get "/", AppointmentController, :mutual_appointments
+        get "/:appointment_id", AppointmentController, :show_mutual_appointments
+        post "/", AppointmentController, :create
+        put "/:appointment_id", AppointmentController, :update
+        delete "/:appointment_id", AppointmentController, :delete
+      end
     end
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:mutually, :dev_routes) do
-    # If you want to use the LiveDashboard in production, you should put
+  # If you want to use the LivaeDashboard in production, you should put
     # it behind authentication and allow only admins to access it.
     # If your application does not have an admins-only section yet,
     # you can use Plug.BasicAuth to set up some basic authentication

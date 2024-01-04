@@ -67,16 +67,10 @@ defmodule Mutually.Mutuals do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_mutual(%Mutual{} = mutual, %Profile{} = profile, attrs \\ %{}) do
-    case mutual |> is_profile_in_mutual?(profile) do
-      true ->
-        mutual
-        |> Mutual.changeset(attrs)
-        |> Repo.update()
-
-      false ->
-        {:error, :not_allowed}
-    end
+  def update_mutual(%Mutual{} = mutual,attrs \\ %{}) do
+    mutual
+    |> Mutual.changeset(attrs)
+    |> Repo.update()
   end
 
   @doc """
