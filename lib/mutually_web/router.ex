@@ -61,6 +61,10 @@ defmodule MutuallyWeb.Router do
         delete "/:vault_item_id", VaultController, :delete
       end
 
+      scope "/:id/chat/messages" do
+        get "/", ChatController, :chat_messages
+      end
+
     end
   end
 

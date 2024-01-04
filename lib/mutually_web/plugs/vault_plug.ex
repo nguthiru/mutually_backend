@@ -12,7 +12,7 @@ defmodule MutuallyWeb.VaultPlug do
 
   def call(conn, _opts) do
     mutual = conn.assigns.mutual
-    %Mutual{vault: vault} = mutual |> Mutuals.preload_vault()
+    %Mutual{vault: vault} = mutual |> Mutuals.preload(:vault)
 
     case vault do
       nil ->
