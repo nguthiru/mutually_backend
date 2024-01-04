@@ -110,4 +110,28 @@ defmodule Mutually.Vaults do
 
     Repo.all(query)
   end
+
+  def is_vault_unlocked?(%Vault{} = vault) do
+    vault.locks_at < DateTime.utc_now()
+  end
+
+  def unlock_vault(%Vault{} = vault, minutes, max_mintues \\ 60) do
+    case minutes <= max_mintues do
+      true ->
+        case is_vault_unlocked?(vault) do
+          true ->
+            {:error, "Vault Already unlocked"}
+
+          false ->
+            new_time = DateTime.add(DateTime.utc_now(), minutes, :minute)
+
+            vault
+            |> Vault.changeset(%{locks_at: new_time})
+            |> Repo.update()
+        end
+
+      false ->
+        {:error, "Minutes more than allowed maximum"}
+    end
+  end
 end

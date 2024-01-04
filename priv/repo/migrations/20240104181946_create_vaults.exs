@@ -4,6 +4,7 @@ defmodule Mutually.Repo.Migrations.CreateVaults do
   def change do
     create table(:vaults) do
       add :mutual_id, references(:mutuals, on_delete: :nothing)
+      add :locks_at, :utc_datetime, default: fragment("NOW()")
 
       timestamps(type: :utc_datetime)
     end
