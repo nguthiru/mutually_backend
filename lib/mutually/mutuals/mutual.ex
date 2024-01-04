@@ -1,6 +1,7 @@
 defmodule Mutually.Mutuals.Mutual do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Mutually.Vaults.Vault
   alias Mutually.Mutuals.MutualActivity
   alias Mutually.Mutuals.MutualPoints
   alias Mutually.Appointments.Appointment
@@ -11,6 +12,7 @@ defmodule Mutually.Mutuals.Mutual do
     belongs_to :profile1, Profile
     belongs_to :profile2, Profile
     has_one :mutual_points, MutualPoints
+    has_one :vault, Vault
     has_many :mutual_activity, MutualActivity
     field :tag, :string
 

@@ -44,6 +44,8 @@ defmodule MutuallyWeb.Router do
       delete "/:id", MutualController, :remove_mutual
       put "/:id", MutualController, :update_mutual
       get "/:id/activities", MutualController, :mutual_activities
+
+
       scope "/:id/appointments" do
         get "/", AppointmentController, :mutual_appointments
         get "/:appointment_id", AppointmentController, :show_mutual_appointments
@@ -51,6 +53,14 @@ defmodule MutuallyWeb.Router do
         put "/:appointment_id", AppointmentController, :update
         delete "/:appointment_id", AppointmentController, :delete
       end
+
+      scope "/:id/vault" do
+        get "/", VaultController, :index
+        get "/:vault_item_id", VaultController, :show
+        post "/", VaultController, :create
+        delete "/:vault_item_id", VaultController, :delete
+      end
+
     end
   end
 

@@ -148,5 +148,10 @@ defmodule Mutually.Mutuals do
     end
   end
 
+  def preload_vault(%Mutual{}=mutual) do
+    Repo.preload(mutual, :vault)
+
+  end
+
 
 end
